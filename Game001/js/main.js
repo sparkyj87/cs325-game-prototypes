@@ -136,7 +136,7 @@ window.onload = function() {
 				car.kill()
 				victory = true;
 				fx2.play();
-				text2.text = 'You won! Press space to restart';
+				text2.text = 'You won! Press Enter to restart';
 			} else {
 				fx3.play();
 				nextLevel();
@@ -148,13 +148,13 @@ window.onload = function() {
 				.overlap(car, sprites, playerDeadHandler, null, this);
 
 		if (!alive) {
-			text2.text = 'You are dead. Press Space to restart';
+			text2.text = 'You are dead. Press Enter to restart';
 		}
 
 		car.body.angularVelocity = 0;
 
 		if ((!alive || victory)
-				&& game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+				&& game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
 			stage = 1;
 			game.state.restart();
 		}
