@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Hello! Amaze!</title>
+    <script src="js/phaser.js"></script>
+    <script src="js/main.js"></script>
+
+<style>
+body
+{
+    color: #777;
+    font-family: "Avenir", Verdana, sans-serif;
+}
+#readme
+{
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+<div id="game"></div>
+<div id="readme">
+<h2>Hole in One</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+-Combined a golf concept with a asteroid theme.
+</li>
+
+<li><strong>Technical Merit:</strong>
+-Ship acceleration, world boundary, collision, audio and sprite uses.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+-I learned a few javascript commands as well as a bit of phaser physics. Combining different examples from Phaser website into one game was surprisingly easy. But I spent quite a bit of time trying to connect different states with no success.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+<ul>
+<li>Asteroids Movement: <a href="https://phaser.io/examples/v2/arcade-physics/asteroids-movement">link</a></li>
+</ul>
+<ul>
+<li>Group Vs Self: <a href="https://phaser.io/examples/v2/arcade-physics/group-vs-self">link</a></li>
+</ul>
+<ul>
+<li>Sprite Vs Sprite: <a href="https://phaser.io/examples/v2/arcade-physics/group-vs-self">link</a></li>
+</ul>
+<ul>
+<li>World Bounds Event: <a href="https://phaser.io/examples/v2/arcade-physics/world-bounds-event">link</a></li>
+</ul>
+<ul>
+<li>Play Music: <a href="https://phaser.io/examples/v2/audio/play-music">link</a></li>
+</ul>
+
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+My game most closely resembles the Asteroids Movement example from Phaser website which 
+I borrowed the code from, as well as Group-vs-self and Sprite-vs-Sprite codes.
+</li>
+
+<li><strong>High Concept:</strong>
+Guide your golf-ball through the 18 holes of mine-filled golf course.
+</li>
+
+<li><strong>Theme:</strong>
+I used the 'golfer' theme selected by the professor.
+</li>
+
+<li><strong>Mandated Variety:</strong>
+Input used: keyboard (4 arrow keys and the space bar), genre: Arcade (flying evasion), 
+play style: fast-paced real time movement
+</li>
+
+<li><strong>Prototype Goal:</strong>
+It evaluates a victory condition mechanics and is goal-based; reaching and beating the last stage, hole 18.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+I want the players to experience the controls of 2D spaceship maneuvering, 
+and the fast-paced gameplay that requires quick decision making skills.
+</li>
+
+<li><strong>Gameplay:</strong>
+A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. 
+Include a concise explanation of the prototype’s inputs and their expected effects (how to play). 
+You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.
+Player will need the 4 arrow keys through most of their gameplay, left and right keys turn player's ship, 
+and up and down keys control forward and backward movement of the ship. Turning has instant acceleration, 
+whereas movement has gradual acceleration. Each stage puts player's ship in the left safe-zone, 
+and player will simply guide his ship to the right safe-zone to move onto the next stage. Each increase in stage 
+will raise the difficulty, either by raising the speed or the number of mines. When player dies or finishes stage
+18, game over message appears and the player can press the space bar to restart.
+</li>
+
+<li><strong>Strategies:</strong>
+When the mines start increasing numbers after each stage try not to wait too long for an opening, 
+because some mines will gain speed by bouncing off other mines. They can move faster than player's 
+ship if they gain the momentum. Also, sometimes navigating along the map edges can help dodge the mines.
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+Game is set in a golf course without gravity. Player character is the golf-ball that wants to survive through
+the 18-hole filled with exploding mines. No backstory is provided in this game. The increasing difficulty 
+represents the main tension of this prototype.
+</li>
+
+<li><strong>Target Audience:</strong>
+This game is mainly made for anyone that enjoys short, fast-paced game, most-likely from kids to young adults.
+</li>
+
+<li><strong>Play Time:</strong>
+1 to 3 minutes
+</li>
+
+</ul>
+
+</div>
+</body>
+</html>
