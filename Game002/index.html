@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Hello! Amaze!</title>
+    <title>Farm Escape</title>
     <script src="js/phaser.js"></script>
     <script src="js/main.js"></script>
 
@@ -22,27 +22,29 @@ body
 <body>
 <div id="game"></div>
 <div id="readme">
-<h2>Hole in One</h2>
+<h2>Farm Escape</h2>
 
 <ul>
 <li><strong>Originality:</strong>
--Combined a golf concept with a asteroid theme.
+An elevator/bridge like obstacle concept that challenges players' quick decision-making skills.
 </li>
 
 <li><strong>Technical Merit:</strong>
--Ship acceleration, world boundary, collision, audio and sprite uses.
+Varied jump height, double-jump, top/bottom/sidewall touch detection, scrolling/fading text, 
+multiple sprite movement control, collision
 </li>
 
 <li><strong>Prototype Postmortem:</strong>
--I learned a few javascript commands as well as a bit of phaser physics. Combining different examples from Phaser website into one game was surprisingly easy. But I spent quite a bit of time trying to connect different states with no success.
+Learned the details of jump height control as well as double-jump. 
+I wanted to add popup-buff items like a rocket booster but ran out of time.
 </li>
 
 <li><strong>Prototype Assets:</strong>
 <ul>
-<li>Asteroids Movement: <a href="https://phaser.io/examples/v2/arcade-physics/asteroids-movement">link</a></li>
+<li>Platformer Tight: <a href="https://phaser.io/examples/v2/arcade-physics/platformer-tight">link</a></li>
 </ul>
 <ul>
-<li>Group Vs Self: <a href="https://phaser.io/examples/v2/arcade-physics/group-vs-self">link</a></li>
+<li>How to make the player do small / medium / long jumps?: <a href="www.html5gamedevs.com/topic/3050-how-to-make-the-player-do-small-medium-long-jumps/">link</a></li>
 </ul>
 <ul>
 <li>Sprite Vs Sprite: <a href="https://phaser.io/examples/v2/arcade-physics/group-vs-self">link</a></li>
@@ -53,62 +55,62 @@ body
 <ul>
 <li>Play Music: <a href="https://phaser.io/examples/v2/audio/play-music">link</a></li>
 </ul>
-
+<ul>
+<li>Chicken sprite picture: <a href="https://opengameart.org/content/chicken-sprites">link</a></li>
+</ul>
+<ul>
+<li>Background picture: <a href="http://www.clker.com/cliparts/I/8/Q/I/9/3/farm-background.svg">link</a></li>
+</ul>
 </li>
 
 <li><strong>Prototype Closest Other Game:</strong>
-My game most closely resembles the Asteroids Movement example from Phaser website which 
-I borrowed the code from, as well as Group-vs-self and Sprite-vs-Sprite codes.
+My game most closely resembles the Platformer Tight example from Phaser website which 
+I borrowed the code from, as well as varying jump height and Bound events codes.
 </li>
 
 <li><strong>High Concept:</strong>
-Guide your golf-ball through the 18 holes of mine-filled golf course.
+Guide your chicken through the 10 levels of elevator logs that can crush you in between them.
 </li>
 
 <li><strong>Theme:</strong>
-I used the 'golfer' theme selected by the professor.
+I used the 'chicken' theme selected by the professor.
 </li>
 
 <li><strong>Mandated Variety:</strong>
-Input used: keyboard (4 arrow keys and the space bar), genre: Arcade (flying evasion), 
-play style: fast-paced real time movement
+Input-keyboard, Randomness-A lot of randomness, Play styles-achiever, Genre:playformer
 </li>
 
 <li><strong>Prototype Goal:</strong>
-It evaluates a victory condition mechanics and is goal-based; reaching and beating the last stage, hole 18.
+The goal is to reach level 10; each level gets harder and will require significant skills to pass.
 </li>
 
 <li><strong>Player Experience Goals:</strong>
-I want the players to experience the controls of 2D spaceship maneuvering, 
-and the fast-paced gameplay that requires quick decision making skills.
+Players are expected to quickly become familiar with game mechanics. Their experiences with the game 
+should be closely connected with their skills; the more skills they develop, more levels they will clear.
 </li>
 
 <li><strong>Gameplay:</strong>
-A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. 
-Include a concise explanation of the prototype’s inputs and their expected effects (how to play). 
-You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.
-Player will need the 4 arrow keys through most of their gameplay, left and right keys turn player's ship, 
-and up and down keys control forward and backward movement of the ship. Turning has instant acceleration, 
-whereas movement has gradual acceleration. Each stage puts player's ship in the left safe-zone, 
-and player will simply guide his ship to the right safe-zone to move onto the next stage. Each increase in stage 
-will raise the difficulty, either by raising the speed or the number of mines. When player dies or finishes stage
-18, game over message appears and the player can press the space bar to restart.
+Player will need up, right, left keys through most of their gameplay, left and right keys move the chicken in those directions, 
+and up key will make the chicken jump. Jump height can be controlled by keeping the up key pressed. Player can also press jump 
+again to double-jump. If player's chicken runs in between two logs closing into each other, the chicken will get crushed and
+it is game over. Each advance in stage will increase the speed and number of logs passing through the stage. 
+Player's chicken will die if it falls into the bottom of screen or crushedbetween the logs. 
+Pressing Enter will restart the game.
 </li>
 
 <li><strong>Strategies:</strong>
-When the mines start increasing numbers after each stage try not to wait too long for an opening, 
-because some mines will gain speed by bouncing off other mines. They can move faster than player's 
-ship if they gain the momentum. Also, sometimes navigating along the map edges can help dodge the mines.
+Players can keep their chicken in the upper half of the screen to avoid falling into the pit.
+Looking ahead of chicken's path is key!
 </li>
 
 <li><strong>Story/Setting/Premise:</strong>
-Game is set in a golf course without gravity. Player character is the golf-ball that wants to survive through
-the 18-hole filled with exploding mines. No backstory is provided in this game. The increasing difficulty 
-represents the main tension of this prototype.
+Game is set in a countryside farm. Player is a rooster that wants to escape the farm but the owner of the farm has
+installed 10 layers of elevator log fences! It must navigate through the logs and past the dangers of the bottomless
+pit and merciless crushing logs.
 </li>
 
 <li><strong>Target Audience:</strong>
-This game is mainly made for anyone that enjoys short, fast-paced game, most-likely from kids to young adults.
+This game is mainly made for anyone that enjoys a fast, non-serious gameplay, most-likely from kids to young adults.
 </li>
 
 <li><strong>Play Time:</strong>

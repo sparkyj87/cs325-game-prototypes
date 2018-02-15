@@ -14,6 +14,7 @@ window.onload = function() {
 		game.load.spritesheet('playerpic', 'assets/sprites/player.png', 32, 48);
 		game.load.image('background', 'assets/sprites/background.png');
 		game.load.image('bar', 'assets/sprites/bar.png');
+		game.load.image('block', 'assets/sprites/block.png');
 		game.load.image('platform', 'assets/sprites/platform.png');
 		game.load.image('squashed', 'assets/sprites/squashed.png');
 		game.load.image('door', 'assets/sprites/door.png');
@@ -29,6 +30,7 @@ window.onload = function() {
 	var cursors;
 	var bg;
 	var bars;
+	var blocks;
 	var start;
 	var end;
 	var door;
@@ -45,6 +47,8 @@ window.onload = function() {
 	var fx3;
 	var fx4;
 	var playOnce;
+	var doubleJumped = false;
+	var readyForDoubleJump = false;
 
 	function create() {
 
@@ -60,7 +64,7 @@ window.onload = function() {
 		game.physics.arcade.gravity.y = 300;
 		facing = 'right';
 		bars = game.add.physicsGroup();
-
+		blocks = game.add.physicsGroup();
 		squashed = game.add.sprite(900, 700, 'squashed');
 		game.physics.enable(squashed, Phaser.Physics.ARCADE);
 
@@ -94,9 +98,10 @@ window.onload = function() {
 		text2.anchor.y = 0.5;
 
 		for (var i = 0; i < 25 + stage * 5; i++) {
-			var bar = bars.create(
-					Math.round(game.rnd.between(50, 700) / 50) * 50,
-					game.world.randomY, 'bar');
+			var bar = bars
+					.create(Math.round(game.rnd.between(50, 700) / 50) * 50,
+							Math.round(game.rnd.between(0, 500) / 100) * 100,
+							'bar');
 
 			var dice = game.rnd.between(1, 2);
 			if (dice == 1) {
@@ -110,6 +115,14 @@ window.onload = function() {
 
 			bar.body.allowGravity = false;
 			bar.body.immovable = true;
+		}
+		for (var i = 0; i < 10 - stage; i++) {
+			var block = blocks.create(Math
+					.round(game.rnd.between(100, 650) / 50) * 50, Math
+					.round(game.rnd.between(0, 500) / 50) * 50 + 20, 'block');
+
+			block.body.allowGravity = false;
+			block.body.immovable = true;
 		}
 		door = game.add.sprite(780, 560, 'door');
 		start = game.add.sprite(0, 590, 'platform');
@@ -142,6 +155,7 @@ window.onload = function() {
 		game.physics.arcade.collide(bars, player);
 		game.physics.arcade.collide(start, player);
 		game.physics.arcade.collide(end, player);
+		game.physics.arcade.collide(blocks, player);
 		bars.forEach(checkPos, this);
 
 		player.body.velocity.x = 0;
@@ -190,8 +204,7 @@ window.onload = function() {
 				alive = false;
 				deathCause = "Congratulations! You won! Press Enter to restart.";
 				playerDeadHandler();
-			}
-			else {
+			} else {
 				stage++;
 				game.state.restart();
 			}
@@ -209,22 +222,26 @@ window.onload = function() {
 					fx3.play();
 					squashed.position.x = player.position.x + 5;
 					squashed.position.y = player.position.y - 5;
-					
+
 					squashed.body.velocity.y = 0;
 					squashed.body.gravity.y = 1;
 				}
 				deathCause = "You were crushed. Press Enter to restart.";
-				
+
 				alive = false;
 			}
 			jumpTimer = 0;
 		}
 
 		if (cursors.up.isDown && alive) {
-			if (player.body.touching.down && jumpTimer == 0) {
+			if ((player.body.touching.down && jumpTimer == 0) || (readyForDoubleJump && !doubleJumped)) {
 				jumpTimer = 1;
 				fx.play();
 				player.body.velocity.y = -400;
+				if(readyForDoubleJump) {
+					readyForDoubleJump = false;
+					doubleJumped = true;
+				}
 			} else if (jumpTimer > 0 && jumpTimer < 40) {
 				jumpTimer++;
 				player.body.velocity.y = -400 + (jumpTimer * 12);
@@ -232,7 +249,18 @@ window.onload = function() {
 		} else {
 			jumpTimer = 0;
 		}
+		
+		if(!(player.body.touching.down) && cursors.up.isUp) {
+			readyForDoubleJump = true;
+		}
+		
+		if(player.body.touching.down) {
+			doubleJumped = false;
+			readyForDoubleJump = false;
+		}
+		
 	}
+
 	function checkPos(bar) {
 		if (bar.y > 620 || bar.y < -20) {
 			var dice = game.rnd.between(1, 2);
@@ -249,6 +277,9 @@ window.onload = function() {
 						-(60 + stage * 10));
 			}
 		}
+		if (game.physics.arcade.overlap(bar, blocks)) {
+			bar.body.velocity.y *= -1;
+		}
 
 	}
 
@@ -262,7 +293,7 @@ window.onload = function() {
 
 	function render() {
 
-		//game.debug.bodyInfo(player, 16, 24);
+		// game.debug.bodyInfo(player, 16, 24);
 
 	}
 }
