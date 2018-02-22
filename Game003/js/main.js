@@ -546,7 +546,8 @@ window.onload = function() {
 						highlight.x = 0;
 						highlight.y = 52;
 						p1NetButton.alpha = 1;
-						p1LassoButton.alpha = 1;
+						if (!moved)
+							p1LassoButton.alpha = 1;
 						p2NetButton.alpha = 0.2;
 						p2LassoButton.alpha = 0.2;
 						if (insideBoard()) {
@@ -583,7 +584,8 @@ window.onload = function() {
 						p1NetButton.alpha = 0.2;
 						p1LassoButton.alpha = 0.2;
 						p2NetButton.alpha = 1;
-						p2LassoButton.alpha = 1;
+						if (!moved)
+							p2LassoButton.alpha = 1;
 						if (insideBoard()) {
 							if (nearP2() && !moved) {
 								player2alpha.x = Math
@@ -642,6 +644,7 @@ window.onload = function() {
 								repeat = false;
 								checkProximity();
 							}
+							p1LassoButton.alpha = 0.2;
 							moved = true;
 						}
 						if (player2alpha.x != 900) {
@@ -654,6 +657,7 @@ window.onload = function() {
 								repeat = false;
 								checkProximity();
 							}
+							p2LassoButton.alpha = 0.2;
 							moved = true;
 						}
 					}
@@ -673,8 +677,7 @@ window.onload = function() {
 				}
 
 			}
-		}
-		else {
+		} else {
 			if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
 				tutorial2.x = 900;
 				tutorial2.y = 700;
@@ -817,7 +820,7 @@ window.onload = function() {
 	}
 
 	function lassoExec1() {
-		if (!tutorialOn && !lassoActivate && !gameover && turn == 1) {
+		if (!moved && !tutorialOn && !lassoActivate && !gameover && turn == 1) {
 			fxButton.play();
 			lassoActivate = true;
 
@@ -831,7 +834,7 @@ window.onload = function() {
 	}
 
 	function lassoExec2() {
-		if (!tutorialOn && !lassoActivate && !gameover && turn == -1) {
+		if (!moved && !tutorialOn && !lassoActivate && !gameover && turn == -1) {
 			fxButton.play();
 			lassoActivate = true;
 
