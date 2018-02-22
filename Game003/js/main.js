@@ -23,6 +23,9 @@ window.onload = function() {
 		game.load.image('highlight', 'assets/sprites/highlight.png');
 		game.load.image('lasso', 'assets/sprites/lasso.png');
 		game.load.image('net', 'assets/sprites/net.png');
+		game.load.image('tutorialbutton', 'assets/sprites/tutorialbutton.png');
+		game.load.image('tutorial1', 'assets/sprites/tutorial1.png');
+		game.load.image('tutorial2', 'assets/sprites/tutorial2.png');
 		game.load.spritesheet('greenzone', 'assets/sprites/greenzone.png', 50,
 				50, 5);
 		game.load.spritesheet('redzone', 'assets/sprites/redzone.png', 50, 50,
@@ -86,6 +89,10 @@ window.onload = function() {
 	var fxLassoHit;
 	var fxFFSound;
 	var fxBrick;
+	var tutorialButton;
+	var tutorial1;
+	var tutorial2;
+	var tutorialOn;
 
 	function create() {
 
@@ -171,469 +178,508 @@ window.onload = function() {
 		lassoActivate = false;
 		timer = game.time.create(true);
 		timer.add(Phaser.Timer.SECOND * 30, timeUp, this);
+
+		tutorialButton = game.add.sprite(400, 562, 'tutorialbutton');
+		game.physics.enable(tutorialButton, Phaser.Physics.ARCADE);
+		tutorialButton.inputEnabled = true;
+		tutorialButton.anchor.set(0.5);
+		tutorialButton.events.onInputDown.add(tutorialInit, this);
+		tutorial1 = game.add.sprite(900, 700, 'tutorial1');
+		game.physics.enable(tutorial1, Phaser.Physics.ARCADE);
+		tutorial2 = game.add.sprite(900, 700, 'tutorial2');
+		game.physics.enable(player2alpha, Phaser.Physics.ARCADE);
+		tutorial1.inputEnabled = true;
+		tutorial1.events.onInputDown.add(tutorialExec, this);
+		tutorialOn = false;
+
 	}
 
 	function update() {
-		if (timer.running) {
-			remainingTime = (30 - Math.round((timer.ms - 500) / 1000));
-			if (remainingTime <= 5) {
-				if (timer.ms % 1000 > 500) {
-					fxTimeWarning.play();
-					timerText.addColor("#ff0000", 0);
+		if (!tutorialOn) {
+			if (timer.running) {
+				remainingTime = (30 - Math.round((timer.ms - 500) / 1000));
+				if (remainingTime <= 5) {
+					if (timer.ms % 1000 > 500) {
+						fxTimeWarning.play();
+						timerText.addColor("#ff0000", 0);
+					} else {
+						timerText.addColor("#ffffff", 0);
+					}
 				} else {
 					timerText.addColor("#ffffff", 0);
 				}
-			} else {
-				timerText.addColor("#ffffff", 0);
+				timerText.text = 'Timer: ' + remainingTime;
 			}
-			timerText.text = 'Timer: ' + remainingTime;
-		}
-		if (!gameover) {
-			if (p1Health == 0) {
-				player2Wins();
-			}
-			if (p2Health == 0) {
-				player1Wins();
-			}
-			var healthCounter = '';
-			for (var count = 0; count < p1Health; count++) {
-				healthCounter += '$';
-			}
-			p1HealthText.text = healthCounter;
-			healthCounter = '';
-			for (var count = 0; count < p2Health; count++) {
-				healthCounter += '$';
-			}
-			p2HealthText.text = healthCounter;
-			if (lassoActivate) {
-				if (turn == 1) {
-					highlight.x = 0;
-					highlight.y = 52;
-					if (keys.down.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player2Check = true;
-						while (blockCheck && edgeCheck && player2Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x == eachBlock.x
-										&& lasso.y + 50 == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player2.x && lasso.y == player2.y) {
-								player2Check = false;
-							}
-
-							if (lasso.y + 50 > 525) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player2Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.y += 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player2Check){
-							fxLassoHit.play();
-							player1Wins();
-						}
-					}
-					if (keys.up.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player2Check = true;
-						while (blockCheck && edgeCheck && player2Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x == eachBlock.x
-										&& lasso.y - 50 == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player2.x && lasso.y == player2.y) {
-								player2Check = false;
-							}
-
-							if (lasso.y - 50 < 75) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player2Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.y -= 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player2Check){
-							fxLassoHit.play();
-							player1Wins();
-						}
-					}
-					if (keys.left.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player2Check = true;
-						while (blockCheck && edgeCheck && player2Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x - 50 == eachBlock.x
-										&& lasso.y == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player2.x && lasso.y == player2.y) {
-								player2Check = false;
-							}
-
-							if (lasso.x - 50 < 125) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player2Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.x -= 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player2Check){
-							fxLassoHit.play();
-							player1Wins();
-						}
-					}
-					if (keys.right.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player2Check = true;
-						while (blockCheck && edgeCheck && player2Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x + 50 == eachBlock.x
-										&& lasso.y == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player2.x && lasso.y == player2.y) {
-								player2Check = false;
-							}
-
-							if (lasso.x + 50 > 675) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player2Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.x += 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player2Check){
-							fxLassoHit.play();
-							player1Wins();
-						}
-					}
+			if (!gameover) {
+				if (p1Health == 0) {
+					player2Wins();
 				}
-				if (turn == -1) {
-					highlight.x = 679;
-					highlight.y = 52;
-					if (keys.down.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player1Check = true;
-						while (blockCheck && edgeCheck && player1Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x == eachBlock.x
-										&& lasso.y + 50 == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player1.x && lasso.y == player1.y) {
-								player1Check = false;
-							}
-
-							if (lasso.y + 50 > 525) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player1Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.y += 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player1Check){
-							fxLassoHit.play();
-							player2Wins();
-						}
-					}
-					if (keys.up.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player1Check = true;
-						while (blockCheck && edgeCheck && player1Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x == eachBlock.x
-										&& lasso.y - 50 == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player1.x && lasso.y == player1.y) {
-								player1Check = false;
-							}
-
-							if (lasso.y - 50 < 75) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player1Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.y -= 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player1Check){
-							fxLassoHit.play();
-							player2Wins();
-						}
-							
-					}
-					if (keys.left.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player1Check = true;
-						while (blockCheck && edgeCheck && player1Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x - 50 == eachBlock.x
-										&& lasso.y == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player1.x && lasso.y == player1.y) {
-								player1Check = false;
-							}
-
-							if (lasso.x - 50 < 125) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player1Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.x -= 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player1Check){
-							fxLassoHit.play();
-							player2Wins();
-						}
-					}
-					if (keys.right.isDown) {
-
-						var blockCheck = true;
-						var edgeCheck = true;
-						var player1Check = true;
-						while (blockCheck && edgeCheck && player1Check) {
-							blocks.forEach(function(eachBlock) {
-								if (lasso.x + 50 == eachBlock.x
-										&& lasso.y == eachBlock.y) {
-									blockCheck = false;
-								}
-							}, this);
-							if (lasso.x == player1.x && lasso.y == player1.y) {
-								player1Check = false;
-							}
-
-							if (lasso.x + 50 > 675) {
-								edgeCheck = false;
-							}
-
-							if (blockCheck && edgeCheck && player1Check) {
-								lassotrail = game.add.sprite(lasso.x, lasso.y,
-										'lassotrail');
-								lassotrail.anchor.set(0.5);
-								var trailanim = lassotrail.animations
-										.add('zoom');
-								lassotrail.animations.play('zoom', 30, false);
-								lasso.x += 50;
-							}
-						}
-						fxLassoSwing.play();
-						if (!player1Check){
-							fxLassoHit.play();
-							player2Wins();
-						}
-					}
+				if (p2Health == 0) {
+					player1Wins();
 				}
-			} else {
-				if (turn == 1) {
-					highlight.x = 0;
-					highlight.y = 52;
-					p1NetButton.alpha = 1;
-					p1LassoButton.alpha = 1;
-					p2NetButton.alpha = 0.2;
-					p2LassoButton.alpha = 0.2;
-					if (insideBoard()) {
-						if (nearP1() && !moved) {
-							player1alpha.x = Math
-									.floor((game.input.mousePointer.x + 25) / 50) * 50;
-							player1alpha.y = Math
-									.floor((game.input.mousePointer.y + 25) / 50) * 50;
+				var healthCounter = '';
+				for (var count = 0; count < p1Health; count++) {
+					healthCounter += '$';
+				}
+				p1HealthText.text = healthCounter;
+				healthCounter = '';
+				for (var count = 0; count < p2Health; count++) {
+					healthCounter += '$';
+				}
+				p2HealthText.text = healthCounter;
+				if (lassoActivate) {
+					if (turn == 1) {
+						highlight.x = 0;
+						highlight.y = 52;
+						if (keys.down.isDown) {
 
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player2Check = true;
+							while (blockCheck && edgeCheck && player2Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x == eachBlock.x
+											&& lasso.y + 50 == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player2.x
+										&& lasso.y == player2.y) {
+									player2Check = false;
+								}
+
+								if (lasso.y + 50 > 525) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player2Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.y += 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player2Check) {
+								fxLassoHit.play();
+								player1Wins();
+							}
+						}
+						if (keys.up.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player2Check = true;
+							while (blockCheck && edgeCheck && player2Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x == eachBlock.x
+											&& lasso.y - 50 == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player2.x
+										&& lasso.y == player2.y) {
+									player2Check = false;
+								}
+
+								if (lasso.y - 50 < 75) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player2Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.y -= 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player2Check) {
+								fxLassoHit.play();
+								player1Wins();
+							}
+						}
+						if (keys.left.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player2Check = true;
+							while (blockCheck && edgeCheck && player2Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x - 50 == eachBlock.x
+											&& lasso.y == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player2.x
+										&& lasso.y == player2.y) {
+									player2Check = false;
+								}
+
+								if (lasso.x - 50 < 125) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player2Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.x -= 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player2Check) {
+								fxLassoHit.play();
+								player1Wins();
+							}
+						}
+						if (keys.right.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player2Check = true;
+							while (blockCheck && edgeCheck && player2Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x + 50 == eachBlock.x
+											&& lasso.y == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player2.x
+										&& lasso.y == player2.y) {
+									player2Check = false;
+								}
+
+								if (lasso.x + 50 > 675) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player2Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.x += 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player2Check) {
+								fxLassoHit.play();
+								player1Wins();
+							}
+						}
+					}
+					if (turn == -1) {
+						highlight.x = 679;
+						highlight.y = 52;
+						if (keys.down.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player1Check = true;
+							while (blockCheck && edgeCheck && player1Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x == eachBlock.x
+											&& lasso.y + 50 == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player1.x
+										&& lasso.y == player1.y) {
+									player1Check = false;
+								}
+
+								if (lasso.y + 50 > 525) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player1Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.y += 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player1Check) {
+								fxLassoHit.play();
+								player2Wins();
+							}
+						}
+						if (keys.up.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player1Check = true;
+							while (blockCheck && edgeCheck && player1Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x == eachBlock.x
+											&& lasso.y - 50 == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player1.x
+										&& lasso.y == player1.y) {
+									player1Check = false;
+								}
+
+								if (lasso.y - 50 < 75) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player1Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.y -= 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player1Check) {
+								fxLassoHit.play();
+								player2Wins();
+							}
+
+						}
+						if (keys.left.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player1Check = true;
+							while (blockCheck && edgeCheck && player1Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x - 50 == eachBlock.x
+											&& lasso.y == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player1.x
+										&& lasso.y == player1.y) {
+									player1Check = false;
+								}
+
+								if (lasso.x - 50 < 125) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player1Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.x -= 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player1Check) {
+								fxLassoHit.play();
+								player2Wins();
+							}
+						}
+						if (keys.right.isDown) {
+
+							var blockCheck = true;
+							var edgeCheck = true;
+							var player1Check = true;
+							while (blockCheck && edgeCheck && player1Check) {
+								blocks.forEach(function(eachBlock) {
+									if (lasso.x + 50 == eachBlock.x
+											&& lasso.y == eachBlock.y) {
+										blockCheck = false;
+									}
+								}, this);
+								if (lasso.x == player1.x
+										&& lasso.y == player1.y) {
+									player1Check = false;
+								}
+
+								if (lasso.x + 50 > 675) {
+									edgeCheck = false;
+								}
+
+								if (blockCheck && edgeCheck && player1Check) {
+									lassotrail = game.add.sprite(lasso.x,
+											lasso.y, 'lassotrail');
+									lassotrail.anchor.set(0.5);
+									var trailanim = lassotrail.animations
+											.add('zoom');
+									lassotrail.animations.play('zoom', 30,
+											false);
+									lasso.x += 50;
+								}
+							}
+							fxLassoSwing.play();
+							if (!player1Check) {
+								fxLassoHit.play();
+								player2Wins();
+							}
+						}
+					}
+				} else {
+					if (turn == 1) {
+						highlight.x = 0;
+						highlight.y = 52;
+						p1NetButton.alpha = 1;
+						p1LassoButton.alpha = 1;
+						p2NetButton.alpha = 0.2;
+						p2LassoButton.alpha = 0.2;
+						if (insideBoard()) {
+							if (nearP1() && !moved) {
+								player1alpha.x = Math
+										.floor((game.input.mousePointer.x + 25) / 50) * 50;
+								player1alpha.y = Math
+										.floor((game.input.mousePointer.y + 25) / 50) * 50;
+
+							} else {
+								player1alpha.x = 900;
+								player1alpha.y = 700;
+							}
+							if (p1BlockRange() && p2BlockRange()
+									&& blockBlockRange()) {
+								blockalpha.x = Math
+										.floor((game.input.mousePointer.x + 25) / 50) * 50;
+								blockalpha.y = Math
+										.floor((game.input.mousePointer.y + 25) / 50) * 50;
+							} else {
+								blockalpha.x = 900;
+								blockalpha.y = 700;
+							}
 						} else {
 							player1alpha.x = 900;
 							player1alpha.y = 700;
-						}
-						if (p1BlockRange() && p2BlockRange()
-								&& blockBlockRange()) {
-							blockalpha.x = Math
-									.floor((game.input.mousePointer.x + 25) / 50) * 50;
-							blockalpha.y = Math
-									.floor((game.input.mousePointer.y + 25) / 50) * 50;
-						} else {
 							blockalpha.x = 900;
 							blockalpha.y = 700;
 						}
-					} else {
-						player1alpha.x = 900;
-						player1alpha.y = 700;
-						blockalpha.x = 900;
-						blockalpha.y = 700;
 					}
-				}
-				if (turn == -1) {
-					highlight.x = 679;
-					highlight.y = 52;
-					p1NetButton.alpha = 0.2;
-					p1LassoButton.alpha = 0.2;
-					p2NetButton.alpha = 1;
-					p2LassoButton.alpha = 1;
-					if (insideBoard()) {
-						if (nearP2() && !moved) {
-							player2alpha.x = Math
-									.floor((game.input.mousePointer.x + 25) / 50) * 50;
-							player2alpha.y = Math
-									.floor((game.input.mousePointer.y + 25) / 50) * 50;
+					if (turn == -1) {
+						highlight.x = 679;
+						highlight.y = 52;
+						p1NetButton.alpha = 0.2;
+						p1LassoButton.alpha = 0.2;
+						p2NetButton.alpha = 1;
+						p2LassoButton.alpha = 1;
+						if (insideBoard()) {
+							if (nearP2() && !moved) {
+								player2alpha.x = Math
+										.floor((game.input.mousePointer.x + 25) / 50) * 50;
+								player2alpha.y = Math
+										.floor((game.input.mousePointer.y + 25) / 50) * 50;
 
+							} else {
+								player2alpha.x = 900;
+								player2alpha.y = 700;
+							}
+							if (p1BlockRange() && p2BlockRange()
+									&& blockBlockRange()) {
+								blockalpha.x = Math
+										.floor((game.input.mousePointer.x + 25) / 50) * 50;
+								blockalpha.y = Math
+										.floor((game.input.mousePointer.y + 25) / 50) * 50;
+							} else {
+								blockalpha.x = 900;
+								blockalpha.y = 700;
+							}
 						} else {
 							player2alpha.x = 900;
 							player2alpha.y = 700;
-						}
-						if (p1BlockRange() && p2BlockRange()
-								&& blockBlockRange()) {
-							blockalpha.x = Math
-									.floor((game.input.mousePointer.x + 25) / 50) * 50;
-							blockalpha.y = Math
-									.floor((game.input.mousePointer.y + 25) / 50) * 50;
-						} else {
 							blockalpha.x = 900;
 							blockalpha.y = 700;
 						}
-					} else {
-						player2alpha.x = 900;
-						player2alpha.y = 700;
-						blockalpha.x = 900;
-						blockalpha.y = 700;
 					}
+
+					if (game.input.activePointer.leftButton.isDown) {
+						if (blockalpha.x != 900) {
+							var b = blocks
+									.create(
+											Math
+													.floor((game.input.mousePointer.x + 25) / 50) * 50,
+											Math
+													.floor((game.input.mousePointer.y + 25) / 50) * 50,
+											'block');
+							game.physics.enable(b, Phaser.Physics.ARCADE);
+							b.anchor.set(0.5);
+							fxBrick.play();
+							moved = false;
+							timer.destroy();
+							timer = game.time.create(true);
+							timer.add(Phaser.Timer.SECOND * 30, timeUp, this);
+							timer.start();
+							turn *= -1;
+						}
+						if (player1alpha.x != 900) {
+							player1.x = Math
+									.floor((game.input.mousePointer.x + 25) / 50) * 50;
+							player1.y = Math
+									.floor((game.input.mousePointer.y + 25) / 50) * 50;
+							repeat = true;
+							while (repeat) {
+								repeat = false;
+								checkProximity();
+							}
+							moved = true;
+						}
+						if (player2alpha.x != 900) {
+							player2.x = Math
+									.floor((game.input.mousePointer.x + 25) / 50) * 50;
+							player2.y = Math
+									.floor((game.input.mousePointer.y + 25) / 50) * 50;
+							repeat = true;
+							while (repeat) {
+								repeat = false;
+								checkProximity();
+							}
+							moved = true;
+						}
+					}
+				}
+			} else {
+				timer.stop();
+				p1NetButton.alpha = 0.2;
+				p1LassoButton.alpha = 0.2;
+				p2NetButton.alpha = 0.2;
+				p2LassoButton.alpha = 0.2;
+				p1LassoCancelButton.x = 900;
+				p1LassoCancelButton.y = 700;
+				p2LassoCancelButton.x = 900;
+				p2LassoCancelButton.y = 700;
+				if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
+					game.state.restart();
 				}
 
-				if (game.input.activePointer.leftButton.isDown) {
-					if (blockalpha.x != 900) {
-						var b = blocks
-								.create(
-										Math
-												.floor((game.input.mousePointer.x + 25) / 50) * 50,
-										Math
-												.floor((game.input.mousePointer.y + 25) / 50) * 50,
-										'block');
-						game.physics.enable(b, Phaser.Physics.ARCADE);
-						b.anchor.set(0.5);
-						fxBrick.play();
-						moved = false;
-						timer.destroy();
-						timer = game.time.create(true);
-						timer.add(Phaser.Timer.SECOND * 30, timeUp, this);
-						timer.start();
-						turn *= -1;
-					}
-					if (player1alpha.x != 900) {
-						player1.x = Math
-								.floor((game.input.mousePointer.x + 25) / 50) * 50;
-						player1.y = Math
-								.floor((game.input.mousePointer.y + 25) / 50) * 50;
-						repeat = true;
-						while (repeat) {
-							repeat = false;
-							checkProximity();
-						}
-						moved = true;
-					}
-					if (player2alpha.x != 900) {
-						player2.x = Math
-								.floor((game.input.mousePointer.x + 25) / 50) * 50;
-						player2.y = Math
-								.floor((game.input.mousePointer.y + 25) / 50) * 50;
-						repeat = true;
-						while (repeat) {
-							repeat = false;
-							checkProximity();
-						}
-						moved = true;
-					}
-				}
 			}
-		} else {
-			timer.stop();
-			p1NetButton.alpha = 0.2;
-			p1LassoButton.alpha = 0.2;
-			p2NetButton.alpha = 0.2;
-			p2LassoButton.alpha = 0.2;
-			p1LassoCancelButton.x = 900;
-			p1LassoCancelButton.y = 700;
-			p2LassoCancelButton.x = 900;
-			p2LassoCancelButton.y = 700;
+		}
+		else {
 			if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
-				game.state.restart();
+				tutorial2.x = 900;
+				tutorial2.y = 700;
+				tutorialOn = false;
 			}
-
 		}
 	}
 
@@ -771,7 +817,7 @@ window.onload = function() {
 	}
 
 	function lassoExec1() {
-		if (!lassoActivate && !gameover && turn == 1) {
+		if (!tutorialOn && !lassoActivate && !gameover && turn == 1) {
 			fxButton.play();
 			lassoActivate = true;
 
@@ -785,7 +831,7 @@ window.onload = function() {
 	}
 
 	function lassoExec2() {
-		if (!lassoActivate && !gameover && turn == -1) {
+		if (!tutorialOn && !lassoActivate && !gameover && turn == -1) {
 			fxButton.play();
 			lassoActivate = true;
 
@@ -799,7 +845,7 @@ window.onload = function() {
 	}
 
 	function lassoCancelExec1() {
-		if (lassoActivate && !gameover && turn == 1) {
+		if (!tutorialOn && lassoActivate && !gameover && turn == 1) {
 			fxButton.play();
 			lassoActivate = false;
 
@@ -813,7 +859,7 @@ window.onload = function() {
 	}
 
 	function lassoCancelExec2() {
-		if (lassoActivate && !gameover && turn == -1) {
+		if (!tutorialOn && lassoActivate && !gameover && turn == -1) {
 			fxButton.play();
 			lassoActivate = false;
 
@@ -827,7 +873,7 @@ window.onload = function() {
 	}
 
 	function netExec1() {
-		if (!gameover && turn == 1) {
+		if (!tutorialOn && !gameover && turn == 1) {
 			var caught = true;
 			var blockCheck = true;
 			var edgeCheck = true;
@@ -996,7 +1042,7 @@ window.onload = function() {
 	}
 
 	function netExec2() {
-		if (!gameover && turn == -1) {
+		if (!tutorialOn && !gameover && turn == -1) {
 			var caught = true;
 			var blockCheck = true;
 			var edgeCheck = true;
@@ -1168,6 +1214,19 @@ window.onload = function() {
 			player2Wins();
 		if (turn == -1)
 			player1Wins();
+	}
+
+	function tutorialInit() {
+		tutorialOn = true;
+		tutorial1.x = 0;
+		tutorial1.y = 0;
+	}
+
+	function tutorialExec() {
+		tutorial1.x = 900;
+		tutorial1.y = 700;
+		tutorial2.x = 0;
+		tutorial2.y = 0;
 	}
 
 	function render() {
