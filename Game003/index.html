@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Caught!</title>
+    <script src="js/phaser.js"></script>
+    <script src="js/main.js"></script>
+
+<style>
+body
+{
+    color: #777;
+    font-family: "Avenir", Verdana, sans-serif;
+}
+#readme
+{
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+<div id="game"></div>
+<div id="readme">
+<h2>Caught!</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+A 2-player board game with rules designed completely by me.
+</li>
+
+<li><strong>Technical Merit:</strong>
+Timer, buttons, proximity check, animated sprites, and sound uses.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+Figured out timer and its operations. 
+Thought about making an AI for 1-player mode, but could not implement due to not enough time.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+<ul>
+<li>Phaser Timer <a href="https://phaser.io/docs/2.6.2/Phaser.Timer.html">link</a></li>
+</ul>
+<ul>
+<li>Colored Characters <a href="https://phaser.io/examples/v2/text/colored-characters">link</a></li>
+</ul>
+<ul>
+<li>For Each <a href="https://phaser.io/examples/v2/groups/for-each">link</a></li>
+</ul>
+
+<li><strong>Prototype Closest Other Game:</strong>
+My game is a variation of my Analog Assignment #1 game, which I made all the rules from scratch.
+</li>
+
+<li><strong>High Concept:</strong>
+Catch the other player each with melee force field, net, or lasso.
+</li>
+
+<li><strong>Theme:</strong>
+I used the 'Caught!' theme provided by the professor.
+</li>
+
+<li><strong>Mandated Variety:</strong>
+Input - direct mouse & keyboard inputs and clickable buttons, 
+Randomness - none, 
+Play styles - competitor, 
+Genre: turn-based board game
+</li>
+
+<li><strong>Prototype Goal:</strong>
+Employs area-movement and obstacle game mechanics.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+The experience gained from this game is similar to that of a chess game;
+more thoughts put into each move places the player closer to victory.
+</li>
+
+<li><strong>Gameplay:</strong>
+Players can move 1 space (any 8 directions) then place an obstacle. At any point of time during their turn,
+players can decide to release either a net or a lasso to catch the player, at the cost of $1. 
+Players are given $3 and will lose if $0. Net requires either an obstacle or board edge
+'within 3 blocks in all 4 direction around the opponent' to work. Lasso can be moved around in 4 directions, 
+but it will travel all the way across the board until it runs into an obstacle or board edge of the map. Lasso can
+be moved indefinitely until it catches the player, or cancelled (because of no path available). Players can destroy
+anything that comes within 1 block distance, including obstacles or other player.
+</li>
+
+<li><strong>Strategies:</strong>
+Players need to make meaningful decisions each move to avoid being trapped by a net or hit by a lasso, by
+placing obstacles and moving their pieces smartly.
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+No background story is present, other than it involves two players trying to catch each other.
+</li>
+
+<li><strong>Target Audience:</strong>
+This game is mainly made for 10 years or older, mostly for anyone who enjoys strategy board game.
+</li>
+
+<li><strong>Play Time:</strong>
+1 to 5 minutes
+</li>
+
+</ul>
+
+</div>
+</body>
+</html>
