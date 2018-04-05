@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tag Wars</title>
+    <script src="js/phaser.js"></script>
+    <script src="js/main.js"></script>
+
+<style>
+body
+{
+    color: #777;
+    font-family: "Avenir", Verdana, sans-serif;
+}
+#readme
+{
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+<div id="game"></div>
+<div id="readme">
+<h2>Tag Wars</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+-Digital version of Physical Prototype game.
+</li>
+
+<li><strong>Technical Merit:</strong>
+-Hex board use, Sprite groups, Sounds.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+-learned how to add/remove sprite board pieces from group, angular board piece placements, sprite input priority.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+<ul>
+<li>Sprite Depth Sort: <a href="https://phaser.io/examples/v2/groups/depth-sort">link</a></li>
+</ul>
+<ul>
+<li>Sprite VS Group: <a href="https://phaser.io/examples/v2/arcade-physics/sprite-vs-group">link</a></li>
+</ul>
+<ul>
+<li>Input Mouse Buttons: <a href="https://phaser.io/examples/v2/input/mouse-buttons">link</a></li>
+</ul>
+<ul>
+<li>Input Handler: <a href="https://phaser.io/docs/2.6.2/Phaser.InputHandler.html">link</a></li>
+</ul>
+<ul>
+<li>Pixel Perfect Click Detection: <a href="https://phaser.io/examples/v2/input/pixel-perfect-click-detection">link</a></li>
+</ul>
+
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+Very similar to the Physical Prototype from last week.
+</li>
+
+<li><strong>High Concept:</strong>
+Both players need to place hex pieces and turn their vehicles to checkmate the other player.
+</li>
+
+<li><strong>Theme:</strong>
+Urban warfare, line of sight, turn-based board game.
+</li>
+
+<li><strong>Mandated Variety:</strong>
+Input used: mouse, genre: Board, 
+play style: chess-like
+</li>
+
+<li><strong>Prototype Goal:</strong>
+It assimilates the physical game, with functional ice/portal movements. Victory detection not yet implemented.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+The experience gained from this game is similar to that of a chess game;
+more thoughts put into each move places the player closer to victory.
+</li>
+
+<li><strong>Gameplay:</strong>
+Core Mechanics: shoot(not yet implemented), move, turn, place hexboard pieces.
+
+Rules
+
+1.
+Yellow player starts in one corner as 1-direction tank, brown player starts in the opposite corner 
+as 1-direction plane. 2 green hexes(upgrades) are placed at each midline corner. 
+2.
+Each player is distributed 5 random map pieces. Every time each player spends a piece, he can 
+pick another random piece from the stack. If tank player picks up red hex, put it back and pick 
+again. If plane player picks up blue hex, put it back and pick again. 
+3.
+Tank can move 1 space, plane can move 5 spaces. 
+4.
+Both tank and plane can kill each other with cannon but the tank, and only the tank, can also kill 
+the plane by overrunning it. 
+5.
+Each turn consists of (in this order): move, set direction of vehicle, and place 1 map piece(red, 
+blue, or cannon refractors). 
+6.
+Red hexes are portals and only works when there are at least two on the map. 
+7.
+Blue hexes are ice slides and gives the tank that moves onto it 1 extra movement to any distance 
+in any direction from the ice slide. Multiple ice sliding is allowed. 
+8.
+Green hexes are consumables that allows tank/plane players to equip 2-direction cannon. 
+9.
+Cannon refractors cannot be removed unless replaced by red or blue hexes. 
+10.
+Red and blue hexes cannot be removed once placed. 
+11.
+Red hex (portal) can transfer the plane or cannon shot into any other portals, but cannon shots 
+must retain same direction that it was shot from.
+</li>
+
+<li><strong>Strategies:</strong>
+Tank player can place ice to give himself the advantage to quickly move onto the plane player. 
+Plane player should try to eat both greens to prevent the tank player from getting 2-direction 
+cannon. 
+Plane player will need to find a way to destroy tank player as quickly as possible, because tank 
+player will be at an advantage once many ice slides are placed.
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+Tank versus Jet in an urban city. Tank tries to shoot down/overrun the plane with speed boosts while plane
+meneuvers with portals to shoot the tank down.
+</li>
+
+<li><strong>Target Audience:</strong>
+kids to young adults.
+</li>
+
+<li><strong>Play Time:</strong>
+5 minutes
+</li>
+
+</ul>
+
+</div>
+</body>
+</html>
