@@ -38,6 +38,7 @@ window.onload = function() {
 	var noCopyOnBoard;
 	var style;
 	var text;
+	var text2;
 	var mousePressed;
 	var boardpieces;
 	var boardpieces1;
@@ -49,10 +50,13 @@ window.onload = function() {
 	var lineArray;
 	var p1Hit;
 	var p2Hit;
+	var propCount;
+	var shooterID;
 
 	function create() {
 
 		lineArray = [];
+
 		fxp1move = game.add.audio('p1move');
 		fxp2move = game.add.audio('p2move');
 		fxpiecedrop = game.add.audio('piecedrop');
@@ -86,13 +90,16 @@ window.onload = function() {
 		state = 1;
 		noHexesSelected = true;
 		style = {
-				font : "30px Arial",
-				fill : "#ff0000",
+				font : "40px Arial",
+				fill : "#ffffff",
 				align : "center"
 		};
-		text = game.add.text(500, 500,"Hi", style);
+		text = game.add.text(400, 50,"", style);
 		text.anchor.x = 0.5;
 		text.anchor.y = 0.5;
+		text2 = game.add.text(400, 550,"", style);
+		text2.anchor.x = 0.5;
+		text2.anchor.y = 0.5;
 		mousePressed = false;
 		boardpieces = game.add.group();
 		var q = boardpieces.create(2000, 2000, 'boardpieces', 0);
@@ -103,22 +110,22 @@ window.onload = function() {
 		boardpieces1 = game.add.group();
 		boardpieces2 = game.add.group();
 		for (var k = 0; k < 5; k++) {
-			var random = game.rnd.between(1,25);
-			if(random >= 1 && random <= 5)
+			var random = game.rnd.between(1,47);
+			if(random >= 1 && random <= 7)
 				random = 0;
-			if(random == 6)
+			if(random >= 8 && random <= 14)
 				random = 1;
-			if(random == 7)
+			if(random >= 15 && random <= 21)
 				random = 2;
-			if(random >= 8 && random <= 12)
+			if(random >= 22 && random <= 28)
 				random = 3;
-			if(random >= 13 && random <= 17)
+			if(random >= 29 && random <= 32)
 				random = 4;
-			if(random >= 18 && random <= 20)
+			if(random >= 33 && random <= 36)
 				random = 5;
-			if(random >= 21 && random <= 22)
+			if(random >= 37 && random <= 40)
 				random = 6;
-			if(random >= 23 && random <= 25)
+			if(random >= 41 && random <= 47)
 				random = 8;
 			var p = boardpieces1.create(50+30*k, 400, 'boardpieces', random);
 			p.anchor.set(0.5);
@@ -127,20 +134,20 @@ window.onload = function() {
 			p.input.priorityID = 1;
 		}
 		for (var k = 0; k < 5; k++) {
-			var random = game.rnd.between(1,22);
-			if(random >= 1 && random <= 5)
+			var random = game.rnd.between(1,40);
+			if(random >= 1 && random <= 7)
 				random = 0;
-			if(random == 6)
+			if(random >= 8 && random <= 14)
 				random = 1;
-			if(random == 7)
+			if(random >= 15 && random <= 21)
 				random = 2;
-			if(random >= 8 && random <= 12)
+			if(random >= 22 && random <= 28)
 				random = 3;
-			if(random >= 13 && random <= 17)
+			if(random >= 29 && random <= 32)
 				random = 4;
-			if(random >= 18 && random <= 20)
+			if(random >= 33 && random <= 36)
 				random = 5;
-			if(random >= 21 && random <= 22)
+			if(random >= 37 && random <= 40)
 				random = 6;
 			var p = boardpieces2.create(600+30*k, 150, 'boardpieces', random);
 			p.anchor.set(0.5);
@@ -153,16 +160,17 @@ window.onload = function() {
 		piececopy.anchor.set(0.5);
 		piececopy.alpha = 0.5;
 
-		firebutton1 = game.add.sprite(105, 322, 'firebutton');
+		firebutton1 = game.add.sprite(900, 900, 'firebutton');
 		firebutton1.inputEnabled = true;
 		firebutton1.events.onInputDown.add(firebutton1Exec, this);
 
-		firebutton2 = game.add.sprite(590, 73, 'firebutton');
+		firebutton2 = game.add.sprite(900, 900, 'firebutton');
 		firebutton2.inputEnabled = true;
 		firebutton2.events.onInputDown.add(firebutton2Exec, this);
 
 		p1Hit = false;
 		p2Hit = false;
+		shooterID = 0;
 
 	}
 	function update() {
@@ -171,8 +179,33 @@ window.onload = function() {
 		noCopyOnBoard = true;
 
 		if(p1.x == p2.x && p1.y == p2.y)
-			game.state.restart();
+			state = 99;
+		if(state == 99) {
+			if(shooterID == 1 && p2Hit){
+				text.text = "Hit! Player 1 wins!";
+			}
+			if(shooterID == 1 && !p2Hit){
+				text.text = "Miss! Player 2 wins!";
+			}
+			if(shooterID == 2 && p1Hit){
+				text.text = "Hit! Player 2 wins!";
+			}
+			if(shooterID == 2 && !p1Hit){
+				text.text = "Miss! Player 1 wins!";
+			}
+			if(shooterID == 0){
+				p2.destroy();
+				text.text = "Steamrolled! Player 1 wins!";
+			}
+			text2.text = "Press Enter to restart.";
+			if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
+				game.state.restart();
+			}
+			
+		}
 		if(state == 1) { // p1 move
+			firebutton1.x = 105;
+			firebutton1.y = 322;
 			p1ind.x = 20;
 			p1ind.y = 335;
 			p2ind.x = 1000;
@@ -209,6 +242,8 @@ window.onload = function() {
 			}
 		}
 		if(state == 2){ // p1 aim
+			firebutton1.x = 900;
+			firebutton1.y = 900;
 			p1ind.x = 20;
 			p1ind.y = 365;
 			hexes.forEach(function(eachHex) {
@@ -230,7 +265,6 @@ window.onload = function() {
 			}
 			if(mousePressed && game.input.activePointer.leftButton.isUp){
 				fxp1move.play();
-				text.text = "p1 angle: " + p1.angle;
 				state = 3;
 				mousePressed = false;
 			}
@@ -264,22 +298,22 @@ window.onload = function() {
 					}
 				}, this);
 
-				var random = game.rnd.between(1,25);
-				if(random >= 1 && random <= 5)
+				var random = game.rnd.between(1,47);
+				if(random >= 1 && random <= 7)
 					random = 0;
-				if(random == 6)
+				if(random >= 8 && random <= 14)
 					random = 1;
-				if(random == 7)
+				if(random >= 15 && random <= 21)
 					random = 2;
-				if(random >= 8 && random <= 12)
+				if(random >= 22 && random <= 28)
 					random = 3;
-				if(random >= 13 && random <= 17)
+				if(random >= 29 && random <= 32)
 					random = 4;
-				if(random >= 18 && random <= 20)
+				if(random >= 33 && random <= 36)
 					random = 5;
-				if(random >= 21 && random <= 22)
+				if(random >= 37 && random <= 40)
 					random = 6;
-				if(random >= 23 && random <= 25)
+				if(random >= 41 && random <= 47)
 					random = 8;
 				var p = boardpieces1.create(hexselect.x, hexselect.y, 'boardpieces', random);
 				p.anchor.set(0.5);
@@ -332,7 +366,7 @@ window.onload = function() {
 			if(mousePressed && game.input.activePointer.leftButton.isUp && piececopy.x != 1000 & piececopy.y != 1000){
 				fxpiecedrop.play();
 				boardpieces.forEach(function(eachBP) {
-					if (piececopy.frame == 8 && eachBP.frame != 8) {
+					if (piececopy.frame == 8 && eachBP.frame != 8 && eachBP.x == piececopy.x && eachBP.y == piececopy.y) {
 						eachBP.destroy();
 					}
 				}, this);
@@ -342,7 +376,6 @@ window.onload = function() {
 				p.input.pixelPerfectOver = true;
 				p.input.priorityID = 1;
 				p.angle = piececopy.angle;
-				text.text = "piececopy angle: " + piececopy.angle;
 				piececopy.destroy();
 				state = 11;
 				mousePressed = false;
@@ -351,6 +384,8 @@ window.onload = function() {
 		}
 
 		if(state == 5) { // p1 steps on ice block
+			firebutton1.x = 900;
+			firebutton1.y = 900;
 			p1ind.x = 20;
 			p1ind.y = 335;
 			hexes.forEach(function(eachHex) {
@@ -386,6 +421,8 @@ window.onload = function() {
 		}
 
 		if(state == 11) { // p2 move
+			firebutton2.x = 590;
+			firebutton2.y = 73;
 			p2ind.x = 747;
 			p2ind.y = 88;
 			p1ind.x = 1000;
@@ -425,6 +462,8 @@ window.onload = function() {
 		}
 
 		if(state == 22){ // p2 aim
+			firebutton2.x = 900;
+			firebutton2.y = 900;
 			p2ind.x = 747;
 			p2ind.y = 118;
 			hexes.forEach(function(eachHex) {
@@ -480,23 +519,21 @@ window.onload = function() {
 					}
 				}, this);
 
-				var random = game.rnd.between(1,25);
-				if(random >= 1 && random <= 5)
+				var random = game.rnd.between(1,40);
+				if(random >= 1 && random <= 7)
 					random = 0;
-				if(random == 6)
+				if(random >= 8 && random <= 14)
 					random = 1;
-				if(random == 7)
+				if(random >= 15 && random <= 21)
 					random = 2;
-				if(random >= 8 && random <= 12)
+				if(random >= 22 && random <= 28)
 					random = 3;
-				if(random >= 13 && random <= 17)
+				if(random >= 29 && random <= 32)
 					random = 4;
-				if(random >= 18 && random <= 20)
+				if(random >= 33 && random <= 36)
 					random = 5;
-				if(random >= 21 && random <= 22)
+				if(random >= 37 && random <= 40)
 					random = 6;
-				if(random >= 23 && random <= 25)
-					random = 7;
 				var p = boardpieces2.create(hexselect.x, hexselect.y, 'boardpieces', random);
 				p.anchor.set(0.5);
 				p.inputEnabled = true;
@@ -550,7 +587,6 @@ window.onload = function() {
 				p.input.pixelPerfectOver = true;
 				p.input.priorityID = 1;
 				p.angle = piececopy.angle;
-				text.text = "p angle: " + p.angle;
 				piececopy.destroy();
 				state = 1;
 				mousePressed = false;
@@ -558,28 +594,21 @@ window.onload = function() {
 		}
 	}
 	function firebutton1Exec() {
+		state = 99;
+		shooterID = 1;
+		propCount = 0;
 		propagate(p1.angle, p1.x, p1.y);
 	}
 	function firebutton2Exec() {
-		text.text = "p2 fire";
+		state = 99;
+		shooterID = 2;
+		propCount = 0;
+		propagate(p2.angle, p2.x, p2.y);
 	}
 
 	function propagate(dir, coorX, coorY){
 
-		var angle;
-		if (Math.round(dir) == 0)
-			angle = 0;
-		if (Math.round(dir) == 60)
-			angle = 60;
-		if (Math.round(dir) == 120)
-			angle = 120;
-		if (Math.round(dir) == -180 || Math.round(dir) == 180)
-			angle = 180;
-		if (Math.round(dir) == -120 || Math.round(dir) == 240)
-			angle = 240;
-		if (Math.round(dir) == -60 || Math.round(dir) == 300)
-			angle = 300;
-
+		var angle = calcDir(dir);
 		var onPiece = false;
 		var pieceFrame;
 		var pieceDir;
@@ -587,97 +616,221 @@ window.onload = function() {
 			if (eachBP.x == coorX && eachBP.y == coorY && eachBP.frame != 8) {
 				onPiece = true;
 				pieceFrame = eachBP.frame;
-				var eachangle;
-				if (Math.round(eachBP.angle) == 0)
-					eachangle = 0;
-				if (Math.round(eachBP.angle) == 60)
-					eachangle = 60;
-				if (Math.round(eachBP.angle) == 120)
-					eachangle = 120;
-				if (Math.round(eachBP.angle) == -180)
-					eachangle = 180;
-				if (Math.round(eachBP.angle) == -120)
-					eachangle = 240;
-				if (Math.round(eachBP.angle) == -60)
-					eachangle = 300;
-				pieceDir = eachangle;
+				pieceDir = calcDir(eachBP.angle);
 			}
 		}, this);
 
-		if(onPiece && (p1.x != coorX || p1.y != coorY)) {
-			if(pieceFrame == 0) {
-
+		if(onPiece && propCount != 0) {
+			if(pieceFrame == 0){
+				if(calcDir(pieceDir - angle) == 60) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 120) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 1) {
-
+			if(pieceFrame == 1){
+				if(calcDir(pieceDir - angle) == 0) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 60) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 2) {
-
+			if(pieceFrame == 2){
+				if(calcDir(pieceDir - angle) == 0) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 120) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 3) {
-
+			if(pieceFrame == 3){
+				if(calcDir(pieceDir - angle) == 60) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir - 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 300) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 4) {
-
+			if(pieceFrame == 4){
+				if(calcDir(pieceDir - angle) == 0) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 60) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 300) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 5) {
-
+			if(pieceFrame == 5){
+				if(calcDir(pieceDir - angle) == 0) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 120) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 300) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+				}
 			}
-			if(pieceFrame == 6) {
+			if(pieceFrame == 6){
+				if(calcDir(pieceDir - angle) == 0) {
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+					propDirection(calcDir(pieceDir + 300), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 60) {
+					propDirection(calcDir(pieceDir - 60), coorX, coorY);
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
+					propDirection(calcDir(pieceDir + 240), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 120) {
+					propDirection(calcDir(pieceDir - 120), coorX, coorY);
+					propDirection(calcDir(pieceDir - 60), coorX, coorY);
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+					propDirection(calcDir(pieceDir + 180), coorX, coorY);
 
+				}
+				if(calcDir(pieceDir - angle) == 180) {
+					propDirection(calcDir(pieceDir - 180), coorX, coorY);
+					propDirection(calcDir(pieceDir - 120), coorX, coorY);
+					propDirection(calcDir(pieceDir - 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+					propDirection(calcDir(pieceDir + 120), coorX, coorY);
+
+				}
+				if(calcDir(pieceDir - angle) == 240) {
+					propDirection(calcDir(pieceDir - 240), coorX, coorY);
+					propDirection(calcDir(pieceDir - 180), coorX, coorY);
+					propDirection(calcDir(pieceDir - 120), coorX, coorY);
+					propDirection(calcDir(pieceDir), coorX, coorY);
+					propDirection(calcDir(pieceDir + 60), coorX, coorY);
+				}
+				if(calcDir(pieceDir - angle) == 300) {
+					propDirection(calcDir(pieceDir - 300), coorX, coorY);
+					propDirection(calcDir(pieceDir - 240), coorX, coorY);
+					propDirection(calcDir(pieceDir - 180), coorX, coorY);
+					propDirection(calcDir(pieceDir - 60), coorX, coorY);
+					propDirection(calcDir(pieceDir), coorX, coorY);
+				}
 			}
 		}
 		else {
-			if(angle == 0 && (coorX + 30 <= 480 + ((coorY - 125) / 25) * 15)){
-				if(checkDirPath(angle, coorX + 30, coorY)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(30, 0);
-					propagate(angle, coorX + 30, coorY);
+			propDirection(angle, coorX, coorY);
+		}
+
+	}
+
+	function propDirection(angle, coorX, coorY) {
+		propCount++;
+		var strKey = "" + (angle+360) + "" + coorX + "" + coorY;
+		var arrayContains = lineArray.includes(strKey);
+		if(!arrayContains){
+			lineArray.push(strKey);
+			if(propCount < 1000){
+				if(angle == 0 && (coorX + 30 <= 480 + ((coorY - 125) / 25) * 15)){
+					if(checkDirPath(angle, coorX + 30, coorY)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(30, 0);
+						propagate(angle, coorX + 30, coorY);
+					}
 				}
-			}
-			if(angle == 60 && (coorY < 425)){
-				if(checkDirPath(angle, coorX + 15, coorY + 25)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(15, 25);
-					propagate(angle, coorX + 15, coorY + 25);
+				if(angle == 60 && (coorY < 425)){
+					if(checkDirPath(angle, coorX + 15, coorY + 25)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(15, 25);
+						propagate(angle, coorX + 15, coorY + 25);
+					}
 				}
-			}
-			if(angle == 120 && (coorY < 425) && (coorX - 15 > 120 + ((coorY - 125) / 25) * 15)){
-				if(checkDirPath(angle, coorX - 15, coorY + 25)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(-15, 25);
-					propagate(angle, coorX - 15, coorY + 25);
+				if(angle == 120 && (coorY < 425) && (coorX - 15 > 120 + ((coorY - 125) / 25) * 15)){
+					if(checkDirPath(angle, coorX - 15, coorY + 25)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(-15, 25);
+						propagate(angle, coorX - 15, coorY + 25);
+					}
 				}
-			}
-			if(angle == 180 && (coorX > 120 + ((coorY - 125) / 25) * 15)){
-				if(checkDirPath(angle, coorX - 30, coorY)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(-30, 0);
-					propagate(angle, coorX - 30, coorY);
+				if(angle == 180 && (coorX > 120 + ((coorY - 125) / 25) * 15)){
+					if(checkDirPath(angle, coorX - 30, coorY)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(-30, 0);
+						propagate(angle, coorX - 30, coorY);
+					}
 				}
-			}
-			if(angle == 240 && (coorY > 125)){
-				if(checkDirPath(angle, coorX - 15, coorY - 25)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(-15, -25);
-					propagate(angle, coorX - 15, coorY - 25);
+				if(angle == 240 && (coorY > 125)){
+					if(checkDirPath(angle, coorX - 15, coorY - 25)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(-15, -25);
+						propagate(angle, coorX - 15, coorY - 25);
+					}
 				}
-			}
-			if(angle == 300 && (coorY > 125) && (coorX + 15 < 480 + ((coorY - 125) / 25) * 15)){
-				if(checkDirPath(angle, coorX + 15, coorY - 25)) {
-					var line = game.add.graphics(coorX, coorY);
-					line.lineStyle(2, 0x00FF00, 1);
-					line.lineTo(15, -25);
-					propagate(angle, coorX + 15, coorY - 25);
+				if(angle == 300 && (coorY > 125) && (coorX + 15 < 480 + ((coorY - 125) / 25) * 15)){
+					if(checkDirPath(angle, coorX + 15, coorY - 25)) {
+						var line = game.add.graphics(coorX, coorY);
+						line.lineStyle(2, 0x00FF00, 1);
+						line.lineTo(15, -25);
+						propagate(angle, coorX + 15, coorY - 25);
+					}
 				}
 			}
 		}
-
 	}
 
 	function checkDirPath(dir, coordX, coordY){
@@ -695,20 +848,7 @@ window.onload = function() {
 
 		boardpieces.forEach(function(eachBP) {
 			if (eachBP.frame != 8 && eachBP.x == coordX && eachBP.y == coordY) {
-				var angle;
-				if (Math.round(eachBP.angle) == 0)
-					angle = 0;
-				if (Math.round(eachBP.angle) == 60)
-					angle = 60;
-				if (Math.round(eachBP.angle) == 120)
-					angle = 120;
-				if (Math.round(eachBP.angle) == -180)
-					angle = 180;
-				if (Math.round(eachBP.angle) == -120)
-					angle = 240;
-				if (Math.round(eachBP.angle) == -60)
-					angle = 300;
-				text.text = "piece #: " + eachBP.frame + ", angle: " + angle;
+				var angle = calcDir(eachBP.angle);
 				if(eachBP.frame == 0 && (angle == dir || angle == (dir + 300) % 360 || angle == (dir + 240) % 360)) {
 					passPieceDir = false;
 				}
@@ -733,5 +873,9 @@ window.onload = function() {
 			return true;
 		}
 		return false;
+	}
+
+	function calcDir(num) {
+		return (Math.round(num) + 360) % 360;
 	}
 }
